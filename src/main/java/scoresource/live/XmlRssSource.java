@@ -21,7 +21,7 @@ public class XmlRssSource implements ScoreSource
     @Override
     public List<LiveGame> getGames(String s) throws UnsupportedEncodingException {
         ArrayList<LiveGame> liveGames = new ArrayList<LiveGame>();
-        SimpleDateFormat dateFormat = new SimpleDateFormat();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
         try {
             Document document = new Builder().build(s, null);
             Elements childElements = document.getRootElement().getFirstChildElement("channel").getChildElements("item");
@@ -62,17 +62,28 @@ public class XmlRssSource implements ScoreSource
 
                     @Override
                     public boolean isFinal() {
-                        return false;
+                        return "Game Finished".equals(status);
                     }
 
                     @Override
                     public String getWinner() {
+                        if(isFinal()) {
+                            Map.Entry<String, Integer> leader = null;
+                            for(Map.Entry<String, Integer> entry: playerScores.entrySet()) {
+                                if(leader == null || entry.getValue() > leader.getValue()) {
+                                    leader = entry;
+                                }
+                            }
+                            if(leader != null) {
+                                return leader.getKey();
+                            }
+                        }
                         return null;
                     }
 
                     @Override
                     public String getStatus() {
-                        return status;
+                        return isFinal() ? "Final" : status;
                     }
 
                     @Override
