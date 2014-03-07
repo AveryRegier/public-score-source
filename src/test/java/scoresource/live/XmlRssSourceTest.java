@@ -78,4 +78,72 @@ public class XmlRssSourceTest {
         assertTrue(liveGame.isFinal());
         assertEquals(28, liveGame.getStartDate().getMinutes());
     }
+
+    @Test
+    public void badRSS() throws UnsupportedEncodingException {
+        String xmlFeed = "<?xml version=\"1.0\"?>" +
+                "<rss version=\"2.0\">" +
+                "<notAChannel>" +
+                "</notAChannel>" +
+                "</rss>";
+        XmlRssSource classUnderTest = new XmlRssSource();
+        List<LiveGame> games = classUnderTest.getGames(xmlFeed);
+        assertTrue(games.isEmpty());
+    }
+
+    @Test
+    public void badData() throws UnsupportedEncodingException {
+        assertNoGames("I am a title that just won't parse.");
+    }
+
+    @Test
+    public void badDataWithHash() throws UnsupportedEncodingException {
+        assertNoGames("I am a # title that just won't parse.");
+    }
+
+    @Test
+    public void badDataWithHashAndVS() throws UnsupportedEncodingException {
+        assertNoGames("I am a # title vsthat just won't parse.");
+    }
+
+    @Test
+    public void badDataWithHashAndVSandColon() throws UnsupportedEncodingException {
+        assertNoGames("I am a # title vsthat just: won't parse.");
+    }
+
+    @Test
+    public void badDataWithHashAndVSandColonAndDashAtEnd() throws UnsupportedEncodingException {
+        assertNoGames("I am a # title vsthat just: won't parse.-");
+    }
+
+    @Test
+    public void badDataWithNumbersThatWontParse() throws UnsupportedEncodingException {
+        assertNoGames("I am a # title vsthat just: won't-parse");
+    }
+
+    @Test
+    public void badDataWithNumbersThatWontParseSecondNumber() throws UnsupportedEncodingException {
+        assertNoGames("I am a # title vsthat just: 54-won't parse");
+    }
+
+    private void assertNoGames(String title) throws UnsupportedEncodingException {
+        String xmlFeed = "<?xml version=\"1.0\"?>" +
+                "<rss version=\"2.0\">" +
+                "<channel>" +
+                "<title>Some Text I don't care about</title>" +
+                "<description>More text I don't care about.</description>" +
+                "<pubDate>Mon, 3 Mar 2014 03:12:01 GMT</pubDate>" +
+                "<item>" +
+                "<title>" + title + "</title>" +
+                "<description>Some other description</description>" +
+                "<pubDate>Mon, 3 Mar 2014 03:28:03 GMT</pubDate>" +
+                "<link>http://link.i.dont.care.about/</link>" +
+                "</item>" +
+                "</channel>" +
+                "</rss>";
+        XmlRssSource classUnderTest = new XmlRssSource();
+        List<LiveGame> games = classUnderTest.getGames(xmlFeed);
+        assertTrue(games.isEmpty());
+    }
+
 }
