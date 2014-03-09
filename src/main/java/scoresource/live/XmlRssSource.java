@@ -18,6 +18,16 @@ import java.util.*;
  */
 public class XmlRssSource implements ScoreSource
 {
+    private String requiredString = "";
+
+    public XmlRssSource() {
+    }
+
+    public XmlRssSource(Properties config) {
+        this.requiredString = config.getProperty("requiredString");
+    }
+
+
     @Override
     public List<LiveGame> getGames(String s) throws UnsupportedEncodingException {
         ArrayList<LiveGame> liveGames = new ArrayList<LiveGame>();
@@ -33,15 +43,16 @@ public class XmlRssSource implements ScoreSource
                         Element child = childElements.get(i);
 
                         String title = getChildValue(child, "title");
-                        final Map<String, Integer> playerScores = parsePlayerScores(title);
-                        if(playerScores != null) {
-                            final String status = getChildValue(child, "description");
+                        if(title.contains(requiredString)) {
+                            final Map<String, Integer> playerScores = parsePlayerScores(title);
+                            if(playerScores != null) {
+                                final String status = getChildValue(child, "description");
 
-                            final Date pubDate = parseDate(dateFormat, child);
+                                final Date pubDate = parseDate(dateFormat, child);
 
-                            liveGames.add(new MyLiveGame(playerScores, status, pubDate));
+                                liveGames.add(new MyLiveGame(playerScores, status, pubDate));
+                            }
                         }
-
                     }
                 }
             }

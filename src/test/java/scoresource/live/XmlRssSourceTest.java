@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import static org.junit.Assert.*;
 
@@ -44,6 +45,64 @@ public class XmlRssSourceTest {
         assertEquals(new Integer(108), playerScores.get("Atlanta Hawks"));
         assertFalse(liveGame.isFinal());
         assertEquals(2, liveGame.getStartDate().getMonth());
+    }
+
+    @Test
+    public void worksWithRequiredString() throws UnsupportedEncodingException {
+        String xmlFeed = "<?xml version=\"1.0\"?>" +
+                "<rss version=\"2.0\">" +
+                "<channel>" +
+                "<title>Some Text I don't care about</title>" +
+                "<description>More text I don't care about.</description>" +
+                "<pubDate>Mon, 3 Mar 2014 03:12:01 GMT</pubDate>" +
+                "<item>" +
+                "<title>Blah Blah Blah: (USA-NBA) #Phoenix Suns vs #Atlanta Hawks: 116-108</title>" +
+                "<description>4th Quarter</description>" +
+                "<pubDate>Mon, 3 Mar 2014 03:09:40 GMT</pubDate>" +
+                "<link>http://link.i.dont.care.about/</link>" +
+                "</item>" +
+                "</channel>" +
+                "</rss>";
+        Properties properties = new Properties();
+        properties.put("requiredString", "(USA-NBA)");
+        XmlRssSource classUnderTest = new XmlRssSource(properties);
+        List<LiveGame> games = classUnderTest.getGames(xmlFeed);
+        assertEquals(1, games.size());
+
+        LiveGame liveGame = games.get(0);
+        assertNotNull(liveGame);
+
+        assertEquals("4th Quarter", liveGame.getStatus());
+        assertNull(liveGame.getWinner());
+        Map<String,Integer> playerScores = liveGame.getPlayerScores();
+        assertEquals(2, playerScores.size());
+        assertEquals(new Integer(116), playerScores.get("Phoenix Suns"));
+        assertEquals(new Integer(108), playerScores.get("Atlanta Hawks"));
+        assertFalse(liveGame.isFinal());
+        assertEquals(2, liveGame.getStartDate().getMonth());
+    }
+
+    @Test
+    public void wontWorkWithoutRequiredString() throws UnsupportedEncodingException {
+        String xmlFeed = "<?xml version=\"1.0\"?>" +
+                "<rss version=\"2.0\">" +
+                "<channel>" +
+                "<title>Some Text I don't care about</title>" +
+                "<description>More text I don't care about.</description>" +
+                "<pubDate>Mon, 3 Mar 2014 03:12:01 GMT</pubDate>" +
+                "<item>" +
+                "<title>Blah Blah Blah: (USA-NBA) #Phoenix Suns vs #Atlanta Hawks: 116-108</title>" +
+                "<description>4th Quarter</description>" +
+                "<pubDate>Mon, 3 Mar 2014 03:09:40 GMT</pubDate>" +
+                "<link>http://link.i.dont.care.about/</link>" +
+                "</item>" +
+                "</channel>" +
+                "</rss>";
+        Properties properties = new Properties();
+        properties.put("requiredString", "(USA-)");
+        XmlRssSource classUnderTest = new XmlRssSource(properties);
+        List<LiveGame> games = classUnderTest.getGames(xmlFeed);
+        assertEquals(0, games.size());
     }
 
     @Test
