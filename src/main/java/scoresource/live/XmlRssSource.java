@@ -33,6 +33,7 @@ public class XmlRssSource implements ScoreSource
         ArrayList<LiveGame> liveGames = new ArrayList<LiveGame>();
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
         try {
+            s = s.replaceAll("&", "&amp;");
             Document document = new Builder().build(s, null);
             Element rootElement = document.getRootElement();
             if(rootElement != null)  {
@@ -59,6 +60,8 @@ public class XmlRssSource implements ScoreSource
 
             return liveGames;
         } catch(Exception e) {
+            e.printStackTrace();
+            System.out.println(s);
             throw new UnsupportedEncodingException(e.getLocalizedMessage());
         }
     }
