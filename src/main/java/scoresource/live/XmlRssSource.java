@@ -93,8 +93,8 @@ public class XmlRssSource implements ScoreSource
             int team2Score = Integer.parseInt(title.substring(endTeam1Score+1).trim());
 
             final Map<String, Integer> playerScores = new LinkedHashMap<String, Integer>();
-            playerScores.put(team1, team1Score);
-            playerScores.put(team2, team2Score);
+            playerScores.put(team1.toUpperCase(), team1Score);
+            playerScores.put(team2.toUpperCase(), team2Score);
             return playerScores;
         } catch(NumberFormatException e){
             return null;

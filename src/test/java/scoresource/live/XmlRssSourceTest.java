@@ -41,8 +41,8 @@ public class XmlRssSourceTest {
         assertNull(liveGame.getWinner());
         Map<String,Integer> playerScores = liveGame.getPlayerScores();
         assertEquals(2, playerScores.size());
-        assertEquals(new Integer(116), playerScores.get("Phoenix Suns"));
-        assertEquals(new Integer(108), playerScores.get("Atlanta Hawks"));
+        assertEquals(new Integer(116), playerScores.get("PHOENIX SUNS"));
+        assertEquals(new Integer(108), playerScores.get("ATLANTA HAWKS"));
         assertFalse(liveGame.isFinal());
         assertEquals(2, liveGame.getStartDate().getMonth());
     }
@@ -76,8 +76,8 @@ public class XmlRssSourceTest {
         assertNull(liveGame.getWinner());
         Map<String,Integer> playerScores = liveGame.getPlayerScores();
         assertEquals(2, playerScores.size());
-        assertEquals(new Integer(116), playerScores.get("Phoenix Suns"));
-        assertEquals(new Integer(108), playerScores.get("Atlanta Hawks"));
+        assertEquals(new Integer(116), playerScores.get("PHOENIX SUNS"));
+        assertEquals(new Integer(108), playerScores.get("ATLANTA HAWKS"));
         assertFalse(liveGame.isFinal());
         assertEquals(2, liveGame.getStartDate().getMonth());
     }
@@ -129,11 +129,11 @@ public class XmlRssSourceTest {
         assertNotNull(liveGame);
 
         assertEquals("Final", liveGame.getStatus());
-        assertEquals("Phoenix Suns", liveGame.getWinner());
+        assertEquals("PHOENIX SUNS", liveGame.getWinner());
         Map<String,Integer> playerScores = liveGame.getPlayerScores();
         assertEquals(2, playerScores.size());
-        assertEquals(new Integer(129), playerScores.get("Phoenix Suns"));
-        assertEquals(new Integer(120), playerScores.get("Atlanta Hawks"));
+        assertEquals(new Integer(129), playerScores.get("PHOENIX SUNS"));
+        assertEquals(new Integer(120), playerScores.get("ATLANTA HAWKS"));
         assertTrue(liveGame.isFinal());
         assertEquals(28, liveGame.getStartDate().getMinutes());
     }
