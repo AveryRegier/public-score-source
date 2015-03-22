@@ -15,7 +15,7 @@ public class LiveTester {
     public static void main(String... args) throws IOException {
         URI uri = URI.create(args[0]);
         String s = readFully(uri.toURL().openStream());
-        for(LiveGame game: new XmlRssSource().getGames(s)) {
+        for(LiveGame game: new XmlRssSource2().getGames(s)) {
             System.out.println(presentResults(game));
         }
     }

@@ -7,6 +7,7 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
 
+import javax.xml.parsers.SAXParserFactory;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,7 +37,12 @@ public class XmlRssSource2 implements ScoreSource {
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
         try {
             s = s.replaceAll("&", "&amp;");
-            Document document = new Builder().build(s, null);
+            SAXParserFactory xmlReader = SAXParserFactory.newInstance();
+            xmlReader.setValidating(false);
+            xmlReader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            Builder xomBuilder = new Builder(xmlReader.newSAXParser().getXMLReader());
+
+            Document document = xomBuilder.build(s, null);
             Element rootElement = document.getRootElement();
             if(rootElement != null)  {
                 Element channelElement = rootElement.getFirstChildElement("channel");
